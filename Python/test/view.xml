@@ -1,3 +1,7 @@
 <app appname='test'>
-    <extension type='button'></extension>
+    <extension type='button' name='testbutton'>
+        <position> auto </position>
+        <parent_viewer> main </parent_viewer>
+        <text> Submit </text>
+    </extension>
 </app>
