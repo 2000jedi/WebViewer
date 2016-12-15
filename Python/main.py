@@ -1,13 +1,22 @@
-import os
-
+from sys import stderr
+from os.path import join, curdir
 import parser
 reload(parser)
 
 
 def main(app_name):
-    app_path = os.path.join(os.path.curdir, app_name)
-    xml_path = os.path.join(app_path, 'view.xml')
+    app_path = join(curdir, app_name)
+    xml_path = join(app_path, 'view.xml')
 
-    parser.parse_xml(xml_path)
+    view = parser.parse_xml(xml_path)
+    app = None
+
+    try:
+        app = __import__(app_name + '.extensions', fromlist=[app_name])
+    except ImportError as e:
+        stderr.write(e.message + '\n')
+        return
+    print app.functions
+
 
 main('test')

@@ -1,7 +1,12 @@
 <app appname='test'>
     <extension type='button' name='testbutton'>
-        <position> auto </position>
-        <parent_viewer> main </parent_viewer>
-        <text> Submit </text>
+        <position>auto</position>
+        <parent_viewer>main</parent_viewer>
+        <text>Submit</text>
+    </extension>
+    <extension type='label' name='display'>
+        <position>auto</position>
+        <parent_viewer>main</parent_viewer>
+        <text>Hello, World!</text>
     </extension>
 </app>

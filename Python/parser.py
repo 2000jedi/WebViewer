@@ -1,14 +1,15 @@
 from xml.dom.minidom import parse
-import xml.dom.minidom
+from sys import stderr
 
 
-class extension:
+class Extension:
 
     def __init__(self, exttype, name, position, parent_viewer):
         self.type = exttype
         self.name = name
         self.position = position if position != 'auto' else None
         self.parent_viewer = parent_viewer if parent_viewer != 'main' else None
+        self.content = None
 
     def __repr__(self):
         return "%s(%s)" % (self.name, self.type)
@@ -16,32 +17,57 @@ class extension:
     def __str__(self):
         return "%s(%s)" % (self.name, self.type)
 
-    def setcontent(self, content):
+    def set_content(self, content):
         self.content = content
 
 
+def tag_exist(xml, tag, default):
+    return str(xml.getElementsByTagName(tag)[0]) if len(xml.getElementsByTagName(tag)) == 1 else default
+
+
+def specified_extension(ext, ext_type):
+    if ext_type == 'button':
+        return {
+            'text': str(ext.getElementsByTagName('text')[0]),
+            'is_active': tag_exist(ext, 'is_active', 'true') == 'true'
+        }
+    if ext_type == 'label':
+        return {
+            'text': str(ext.getElementsByTagName('text')[0]),
+            'font_size': int(tag_exist(ext, 'font_size', 12))
+        }
+    if ext_type == 'text':
+        return {
+            'default': tag_exist(ext, 'default_text', ''),
+            'font_size': int(tag_exist(ext, 'font_size', 12))
+        }
+    if ext_type == 'pic':
+        return {
+            'path': str(ext.getElementsByTagName('path')[0])
+        }
+
+
+def parse_position(position):
+    position = str(position)
+    if position == 'auto':
+        return None
+    return position.split('\|')
+
+
 def parse_xml(xml_path):
-    DOMTree = parse(xml_path)
-    elements = DOMTree.documentElement
+    dom_tree = parse(xml_path)
+    elements = dom_tree.documentElement
     if not elements.hasAttribute('appname'):
         raise Exception("XML file corrupted")
 
     title = elements.getAttribute('appname')
-    print title
-    exts = elements.getElementsByTagName('extension')
     extensions = []
-    for ext in exts:
-        if not ext.hasAttribute('type') or not ext.hasAttribute('name'):
-            raise Exception("XML file corrupted")
-        content = {}
-        ext_ = extension(exttype=ext.getAttribute('type'), name=ext.getAttribute('name'), position=ext.getElementsByTagName('position')[0], parent_viewer=ext.getElementsByTagName('parent_viewer')[0])
-        if (ext_.type == 'button'):
-            content['text'] = ext.getElementsByTagName('text')[0]
-            try:
-                content['is_active'] = ext.getElementsByTagName('is_active')[0]
-            except:
-                content['is_active'] =True
-
-        ext_.setcontent(content)
+    for ext in elements.getElementsByTagName('extension'):
+        try:
+            ext_ = Extension(exttype=str(ext.getAttribute('type')), name=str(ext.getAttribute('name')), position=parse_position(ext.getElementsByTagName('position')[0]), parent_viewer=str(ext.getElementsByTagName('parent_viewer')[0]))
+            ext_.set_content(specified_extension(ext, ext_.type))
+        except:
+            stderr.write('XML file corrupted\n')
+            return None
         extensions.append(ext_)
-    print extensions
+    return title, extensions
