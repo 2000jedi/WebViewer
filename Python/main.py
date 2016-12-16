@@ -8,7 +8,8 @@ def main(app_name):
     app_path = join(curdir, app_name)
     xml_path = join(app_path, 'view.xml')
 
-    view = parser.parse_xml(xml_path)
+    global views
+    views = parser.parse_xml(xml_path)
     app = None
 
     try:

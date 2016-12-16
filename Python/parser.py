@@ -39,7 +39,8 @@ def specified_extension(ext, ext_type):
     if ext_type == 'text':
         return {
             'default': tag_exist(ext, 'default_text', ''),
-            'font_size': int(tag_exist(ext, 'font_size', 12))
+            'font_size': int(tag_exist(ext, 'font_size', 12)),
+            'is_active': tag_exist(ext, 'is_active', 'true') == 'true')
         }
     if ext_type == 'pic':
         return {
