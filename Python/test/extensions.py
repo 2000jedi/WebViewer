@@ -3,10 +3,11 @@ import file
 
 
 def testbutton_onclick(extension, views):
-    display = views.getview('main').getextension('display')
-    display.set_label(web.get('https://github.com/2000jedi/SAM.git'))
+    display = views['display']
+    # display.set_label(web.get('https://github.com/2000jedi/SAM.git'))
+    display.set_label('Hi')
 
 
-functions = [
-    ('testbutton', 'onclick', testbutton_onclick)
-]
+functions = {
+    'testbutton': {'clicked': testbutton_onclick}
+}

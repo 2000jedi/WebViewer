@@ -1,12 +1,13 @@
-<app appname='test'>
-    <extension type='button' name='testbutton'>
-        <position>auto</position>
-        <parent_viewer>main</parent_viewer>
-        <text>Submit</text>
-    </extension>
-    <extension type='label' name='display'>
-        <position>auto</position>
-        <parent_viewer>main</parent_viewer>
-        <text>Hello, World!</text>
-    </extension>
+<app appname='test' size='640X480'>
+    <icon>icon.png</icon>
+    <framework type="table" name="table1" params="1,2">
+        <extension type='button' name='testbutton'>
+            <position>0,1,1,2</position>
+            <text>Close</text>
+        </extension>
+        <extension type='label' name='display'>
+            <position>0,1,0,1</position>
+            <text>Hello, World!</text>
+        </extension>
+    </framework>
 </app>
