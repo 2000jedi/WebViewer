@@ -1,5 +1,4 @@
 from xml.dom.minidom import parse
-from sys import stderr
 
 
 class Extension:
@@ -34,7 +33,7 @@ class Framework:
         return "%s(%s)" % (self.name, self.type)
 
 
-def getText(leaf):
+def get_text(leaf):
     nodelist = leaf.childNodes
     rc = []
     for node in nodelist:
@@ -50,23 +49,33 @@ def tag_exist(xml, tag, default):
 def specified_extension(ext, ext_type):
     if ext_type == 'button':
         return {
-            'text': getText(ext.getElementsByTagName('text')[0]),
-            'is_active': tag_exist(ext, 'is_active', 'true') == 'true'
+            'text': get_text(ext.getElementsByTagName('text')[0])
         }
     if ext_type == 'label':
         return {
-            'text': getText(ext.getElementsByTagName('text')[0]),
+            'text': get_text(ext.getElementsByTagName('text')[0]),
             'font_size': int(tag_exist(ext, 'font_size', 12))
         }
     if ext_type == 'text':
         return {
             'default': tag_exist(ext, 'default_text', ''),
-            'font_size': int(tag_exist(ext, 'font_size', 12)),
-            'is_active': tag_exist(ext, 'is_active', 'true') == 'true'
+            'font_size': int(tag_exist(ext, 'font_size', 12))
         }
     if ext_type == 'pic':
         return {
-            'path': getText(ext.getElementsByTagName('path')[0])
+            'image': get_text(ext.getElementsByTagName('path')[0])
+        }
+    if ext_type == 'list':
+        return {
+            'default-items': tag_exist(ext, 'default-items', '')
+        }
+    if ext_type == 'check':
+        return {
+            'default': tag_exist(ext, 'default', 'true') == 'true'
+        }
+    if ext_type == 'input':
+        return {
+            'active': tag_exist(ext, 'default', 'true') == 'true'
         }
 
 
@@ -79,7 +88,7 @@ def walk(framework):
     extensions = []
     for ext in raw_extensions:
         #try:
-        ext_ = Extension(exttype=str(ext.getAttribute('type')), name=str(ext.getAttribute('name')), position=getText(ext.getElementsByTagName('position')[0]))
+        ext_ = Extension(exttype=str(ext.getAttribute('type')), name=str(ext.getAttribute('name')), position=get_text(ext.getElementsByTagName('position')[0]))
         ext_.set_content(specified_extension(ext, ext_.type))
         #except Exception as e:
         #    stderr.write('XML file corrupted\n')

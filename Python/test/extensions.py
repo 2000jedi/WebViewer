@@ -1,5 +1,4 @@
-import web
-import file
+from Python import web
 
 
 def testbutton_onclick(extension, views):
