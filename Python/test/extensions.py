@@ -8,7 +8,7 @@ def testbutton_onclick(extension, views):
             self.after_complete_param.set_label(self.result)
 
     display = views['display']
-    get_('http://www.bilibili.com/', after_complete=display).get_routine()
+    get_('http://www.bilibili.com/', after_complete=display).get()
 
 
 functions = {

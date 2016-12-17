@@ -5,6 +5,7 @@ import globals
 class Application(gtk.Window):
 
     def __init__(self, appname, size):
+        gtk.gdk.threads_init()
         super(Application, self).__init__()
         self.appname = appname
         self.size = size
@@ -42,7 +43,9 @@ class Application(gtk.Window):
         # self.set_icon_from_file(icon)
         self.connect("destroy", self.destroy)
         self.show_all()
+        gtk.threads_enter()
         gtk.main()
+        gtk.threads_leave()
 
     def destroy(self, widget):
         gtk.main_quit()
