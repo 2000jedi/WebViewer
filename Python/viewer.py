@@ -26,9 +26,7 @@ class Application(gtk.Window):
 
     def parse_framework(self, parent, frm):
         self.extensions[frm.name] = self.get_view(frm.type, frm.params)
-        print frm
         for ext in frm.subExtension:
-            print ext
             self.extensions[ext.name] = self.get_view(ext.type)(ext)
             self.extensions[frm.name].attach(self.extensions[ext.name].widget, ext.position[0], ext.position[1], ext.position[2], ext.position[3])
         for view in frm.subFramework:
@@ -68,8 +66,7 @@ class Label(Viewer):
 
     def set_label(self, label):
         self.extension.content['text'] = label
-        gtk.Label().set_text(label)
-        # widget.setlabel
+        self.widget.set_text(label)
 
     def get_text(self):
         return self.extension.content['text']

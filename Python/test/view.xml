@@ -2,11 +2,11 @@
     <icon>icon.png</icon>
     <framework type="table" name="table1" params="1,2">
         <extension type='button' name='testbutton'>
-            <position>0,1,1,2</position>
+            <position>0,2,1,2</position>
             <text>Close</text>
         </extension>
         <extension type='label' name='display'>
-            <position>0,1,0,1</position>
+            <position>0,2,0,1</position>
             <text>Hello, World!</text>
         </extension>
     </framework>
