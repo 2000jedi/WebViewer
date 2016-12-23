@@ -19,12 +19,13 @@ class Extension:
 
 
 class Framework:
-    def __init__(self, name, type, sub_framework, sub_extension, params):
+    def __init__(self, name, exttype, sub_framework, sub_extension, params, position):
         self.name = name
-        self.type = type
+        self.type = exttype
         self.subFramework = sub_framework
         self.subExtension = sub_extension
         self.params = [int(i) for i in str(params).split(',')]
+        self.position = [int(i) for i in position.split(',')]
 
     def __repr__(self):
         return "%s(%s)" % (self.name, self.type)
@@ -87,14 +88,10 @@ def walk(framework):
     raw_extensions = framework.getElementsByTagName('extension')
     extensions = []
     for ext in raw_extensions:
-        #try:
         ext_ = Extension(exttype=str(ext.getAttribute('type')), name=str(ext.getAttribute('name')), position=get_text(ext.getElementsByTagName('position')[0]))
         ext_.set_content(specified_extension(ext, ext_.type))
-        #except Exception as e:
-        #    stderr.write('XML file corrupted\n')
-        #    return None
         extensions.append(ext_)
-    return Framework(framework.getAttribute('name'), framework.getAttribute('type'), frameworks, extensions, framework.getAttribute('params'))
+    return Framework(framework.getAttribute('name'), framework.getAttribute('type'), frameworks, extensions, framework.getAttribute('params'), [int(i) for i in tag_exist(framework, 'position', '-1').split(',')])
 
 
 def parse_xml(xml_path):

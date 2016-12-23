@@ -1,10 +1,10 @@
 from sys import stderr
 from os.path import join, curdir
 import parser
-import viewer
 import globals
+import application
 reload(parser)
-reload(viewer)
+reload(application)
 
 
 def main(app_name):
@@ -18,7 +18,7 @@ def main(app_name):
         stderr.write(e.message + '\n')
         return
 
-    main_window = viewer.Application(views[0], views[1])
+    main_window = application.Application(views[0], views[1])
     globals.views = main_window.extensions
     main_window.start(views[2])
 

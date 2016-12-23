@@ -2,60 +2,6 @@ import gtk
 import globals
 
 
-class Application(gtk.Window):
-
-    def __init__(self, appname, size):
-        gtk.gdk.threads_init()
-        super(Application, self).__init__()
-        self.appname = appname
-        self.size = size
-        self.extensions = {}
-
-    def get_view(self, str_type, params=None):
-        if str_type == 'alignment':
-            return gtk.Alignment(params[0], params[1], params[2], params[3])
-        elif str_type == 'table':
-            return gtk.Table(params[0], params[1], True)
-        elif str_type == 'button':
-            return Button
-        elif str_type == 'label':
-            return Label
-        elif str_type == 'text':
-            return Text
-        elif str_type == 'list':
-            return List
-        elif str_type == 'check':
-            return CheckButton
-        elif str_type == 'pic':
-            return Image
-        elif str_type == 'input':
-            return Entry
-
-    def parse_framework(self, parent, frm):
-        self.extensions[frm.name] = self.get_view(frm.type, frm.params)
-        for ext in frm.subExtension:
-            self.extensions[ext.name] = self.get_view(ext.type)(ext)
-            self.extensions[frm.name].attach(self.extensions[ext.name].widget, ext.position[0], ext.position[1], ext.position[2], ext.position[3])
-        for view in frm.subFramework:
-            self.parse_framework(self.extensions[frm.name].attach, view)
-        parent(self.extensions[frm.name])
-
-    def start(self, main_framework):
-        self.parse_framework(self.add, main_framework)
-        self.set_size_request(int(self.size[0]), int(self.size[1]))
-        self.set_position(gtk.WIN_POS_CENTER)
-        self.set_title(self.appname)
-        # self.set_icon_from_file(icon)
-        self.connect("destroy", self.destroy)
-        self.show_all()
-        gtk.threads_enter()
-        gtk.main()
-        gtk.threads_leave()
-
-    def destroy(self, widget):
-        gtk.main_quit()
-
-
 class Viewer(object):
     extension = None
     widget = None
@@ -158,3 +104,44 @@ class Entry(Viewer):
 
     def get_text(self):
         return self.widget.get_text()
+
+
+class Alignment(Viewer):
+    def __init__(self, extension):
+        super(Table, self).__init__(extension)
+        self.widget = gtk.Table(extension.params[0], extension.params[1], extension.params[2], extension.params[3])
+
+    def attach(self, widget, extension):
+        self.widget.attach(widget, extension.position[0], extension.position[1], extension.position[2], extension.position[3])
+
+
+class Table(Viewer):
+    def __init__(self, extension):
+        super(Table, self).__init__(extension)
+        self.widget = gtk.Table(extension.position[0], extension.position[1], True)
+
+    def attach(self, widget, extension):
+        self.widget.attach(widget, extension.position[0], extension.position[1], extension.position[2], extension.position[3])
+
+
+class Fixed(Viewer):
+    def __init__(self, extension):
+        super(Fixed, self).__init__(extension)
+        self.widget = gtk.Fixed()
+
+    def attach(self, widget, extension):
+        self.widget.put(widget, extension.position[0], extension.position[1])
+
+
+get_view = {
+    'alignment': Alignment,
+    'table': Table,
+    'fixed': Fixed,
+    'button': Button,
+    'label': Label,
+    'text': Text,
+    'list': List,
+    'check': CheckButton,
+    'pic': Image,
+    'input': Entry
+}
